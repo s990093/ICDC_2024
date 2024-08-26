@@ -1,23 +1,28 @@
-//
-//  ContentView.swift
-//  icd-Iphone
-//
-//  Created by hungwei on 2024/8/24.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("test Hello, world!")
+        TabView {
+            CollisionView()
+                .tabItem {
+                    Image(systemName: "bolt.fill")
+                }
+
+            BatteryView()
+                .tabItem {
+                    Image(systemName: "battery.100")
+                }
+
+            EnvironmentView()
+                .tabItem {
+                    Image(systemName: "thermometer.sun.fill")
+                }
         }
-        .padding()
+//        .preferredColorScheme(settings.isDarkMode ? .dark : .light) // Set color scheme based on the toggle
     }
 }
+
 
 #Preview {
     ContentView()

@@ -1,17 +1,24 @@
-//
-//  icd_IphoneApp.swift
-//  icd-Iphone
-//
-//  Created by hungwei on 2024/8/24.
-//
-
 import SwiftUI
 
 @main
-struct icd_IphoneApp: App {
+struct MyApp: App {
+    @State private var isShowingLaunchScreen = true
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ZStack {
+                ContentView()
+                if isShowingLaunchScreen {
+                    LaunchScreenView(isShowing: $isShowingLaunchScreen)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                withAnimation {
+                                    isShowingLaunchScreen = false
+                                }
+                            }
+                        }
+                }
+            }
         }
     }
 }

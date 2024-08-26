@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D9083DDA2C79D8DF0051375B /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9083DD92C79D8DF0051375B /* Model.swift */; };
+		D9083DDE2C79D9450051375B /* CollisionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9083DDD2C79D9450051375B /* CollisionView.swift */; };
+		D9083DE02C79D96D0051375B /* BatteryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9083DDF2C79D96D0051375B /* BatteryView.swift */; };
 		D91841862C79756900BECB23 /* icd_IphoneApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91841852C79756900BECB23 /* icd_IphoneApp.swift */; };
 		D91841882C79756900BECB23 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91841872C79756900BECB23 /* ContentView.swift */; };
 		D918418A2C79756A00BECB23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D91841892C79756A00BECB23 /* Assets.xcassets */; };
@@ -14,6 +17,8 @@
 		D91841972C79756B00BECB23 /* icd_IphoneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91841962C79756B00BECB23 /* icd_IphoneTests.swift */; };
 		D91841A12C79756B00BECB23 /* icd_IphoneUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91841A02C79756B00BECB23 /* icd_IphoneUITests.swift */; };
 		D91841A32C79756B00BECB23 /* icd_IphoneUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91841A22C79756B00BECB23 /* icd_IphoneUITestsLaunchTests.swift */; };
+		D9D785742C79E0B9000C1512 /* EnvironmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D785732C79E0B9000C1512 /* EnvironmentView.swift */; };
+		D9D785772C79E2E1000C1512 /* LaunchScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D785762C79E2E1000C1512 /* LaunchScreenView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +39,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D9083DD92C79D8DF0051375B /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		D9083DDD2C79D9450051375B /* CollisionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollisionView.swift; sourceTree = "<group>"; };
+		D9083DDF2C79D96D0051375B /* BatteryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryView.swift; sourceTree = "<group>"; };
 		D91841822C79756900BECB23 /* icd-Iphone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "icd-Iphone.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D91841852C79756900BECB23 /* icd_IphoneApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = icd_IphoneApp.swift; sourceTree = "<group>"; };
 		D91841872C79756900BECB23 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -44,6 +52,9 @@
 		D918419C2C79756B00BECB23 /* icd-IphoneUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "icd-IphoneUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D91841A02C79756B00BECB23 /* icd_IphoneUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = icd_IphoneUITests.swift; sourceTree = "<group>"; };
 		D91841A22C79756B00BECB23 /* icd_IphoneUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = icd_IphoneUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		D9D785732C79E0B9000C1512 /* EnvironmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentView.swift; sourceTree = "<group>"; };
+		D9D785752C79E2A1000C1512 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D9D785762C79E2E1000C1512 /* LaunchScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,9 +105,15 @@
 		D91841842C79756900BECB23 /* icd-Iphone */ = {
 			isa = PBXGroup;
 			children = (
+				D9D785752C79E2A1000C1512 /* Info.plist */,
+				D9083DD92C79D8DF0051375B /* Model.swift */,
 				D91841852C79756900BECB23 /* icd_IphoneApp.swift */,
 				D91841872C79756900BECB23 /* ContentView.swift */,
+				D9D785732C79E0B9000C1512 /* EnvironmentView.swift */,
+				D9083DDD2C79D9450051375B /* CollisionView.swift */,
+				D9083DDF2C79D96D0051375B /* BatteryView.swift */,
 				D91841892C79756A00BECB23 /* Assets.xcassets */,
+				D9D785762C79E2E1000C1512 /* LaunchScreenView.swift */,
 				D918418B2C79756A00BECB23 /* Preview Content */,
 			);
 			path = "icd-Iphone";
@@ -257,7 +274,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9083DE02C79D96D0051375B /* BatteryView.swift in Sources */,
+				D9083DDE2C79D9450051375B /* CollisionView.swift in Sources */,
+				D9D785772C79E2E1000C1512 /* LaunchScreenView.swift in Sources */,
+				D9083DDA2C79D8DF0051375B /* Model.swift in Sources */,
 				D91841882C79756900BECB23 /* ContentView.swift in Sources */,
+				D9D785742C79E0B9000C1512 /* EnvironmentView.swift in Sources */,
 				D91841862C79756900BECB23 /* icd_IphoneApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -422,13 +444,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"icd-Iphone/Preview Content\"";
+				DEVELOPMENT_TEAM = S8TAUN5365;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "icd-Iphone/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = SEESAW;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -450,13 +475,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"icd-Iphone/Preview Content\"";
+				DEVELOPMENT_TEAM = S8TAUN5365;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "icd-Iphone/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = SEESAW;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
