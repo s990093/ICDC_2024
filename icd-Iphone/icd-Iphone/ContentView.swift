@@ -18,6 +18,10 @@ struct ContentView: View {
                 .tabItem {
                     Image(systemName: "thermometer.sun.fill")
                 }
+            TestWebSocketView()
+                .tabItem {
+                    Image(systemName: "thermometer.sun.fill")
+                }
         }
 //        .preferredColorScheme(settings.isDarkMode ? .dark : .light) // Set color scheme based on the toggle
     }
