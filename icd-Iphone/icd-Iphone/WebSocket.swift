@@ -5,13 +5,14 @@ class WebSocketManager: ObservableObject {
     private var webSocketTask: URLSessionWebSocketTask?
     @Published var receivedMessage: String = ""
     @Published var isConnected: Bool = false
+    var ip = "49.213.238.75"
     
     init() {
         connect() // Automatically connect when the manager is initialized
     }
     
     func connect() {
-        let url = URL(string: "ws://localhost:8000/ws/chat/example_room/")!
+        let url = URL(string: "ws://49.213.238.75:8000/ws/chat/example_room/")!
         webSocketTask = URLSession.shared.webSocketTask(with: url)
         webSocketTask?.resume()
         isConnected = true
