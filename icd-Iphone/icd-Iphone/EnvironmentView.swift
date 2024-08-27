@@ -3,7 +3,8 @@ import SwiftUI
 struct EnvironmentView: View {
     @State private var temperature: Double = 22.0 // 假設默認溫度為 22°C
     @State private var humidity: Double = 50.0 // 假設默認濕度為 50%
-
+    private let speechManager = SpeechManager() // Instantiate SpeechManager
+    
     var body: some View {
         VStack(spacing: 20) {
             Text("Environmental monitoring")
@@ -27,7 +28,7 @@ struct EnvironmentView: View {
                 }
                 .transition(.slide)
                 .animation(.easeInOut(duration: 0.5))
-
+                
                 HStack {
                     Image(systemName: "drop.fill")
                         .foregroundColor(.accentColor)
@@ -64,5 +65,11 @@ struct EnvironmentView: View {
         .shadow(radius: 10)
         .transition(.opacity)
         .animation(.easeInOut(duration: 0.5))
+        .onAppear {
+            // Speak the initial temperature and humidity values
+            let speechText = "Current temperature is \(temperature) degrees Celsius. Current humidity is \(humidity) percent."
+            speechManager.speak(text: speechText)
+        }
     }
+    
 }

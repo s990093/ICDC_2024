@@ -2,7 +2,8 @@ import SwiftUI
 
 struct BatteryView: View {
     @State private var batteryLevel: Double = 100.0
-    
+    private let speechManager = SpeechManager() // Instantiate SpeechManager
+
     var body: some View {
         VStack {
             // Title at the top
@@ -41,6 +42,9 @@ struct BatteryView: View {
             
             Spacer()
         }
-        
+        .onAppear{
+            
+            speechManager.speak(text: "Battery charge \(batteryLevel)%")
+        }
     }
 }

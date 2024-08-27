@@ -1,58 +1,71 @@
 import asyncio
 import websockets
 import json
-import time
 import serial
 from datetime import datetime, timedelta
+from rich.console import Console
+from rich.text import Text
 
-# 配置串口参数
-ser = serial.Serial('/dev/cu.usbserial-110', 115200)  # 修改为你 Arduino 所连接的串口端口和波特率
+# Configure serial connection to ESP32
+ser = serial.Serial('/dev/cu.usbserial-130', 115200)
 
-async def websocket_test():
-    ip = "49.213.238.75"
-    uri = f"ws://{ip}:8000/ws/chat/example_room/"  # WebSocket 服务器的完整路径
+# Initialize rich console
+console = Console()
+
+async def handle_websocket(websocket):
+    """ Handle WebSocket connection and communication. """
+    console.print("Connected to WebSocket server.", style="bold green")
     
-    async with websockets.connect(uri) as websocket:
-        print("Connected to WebSocket server. You can start sending messages.")
-        
-        
-        try:
-            while True:
-                if ser.in_waiting > 0:
-                    # 读取 Arduino 发送的串口数据
-                    arduino_data = ser.readline().decode('utf-8').strip()
-                    # print(arduino_data)
+    last_sent_time = None  # Track the time when the last message was sent
+
+    try:
+        while True:
+            if ser.in_waiting > 0:
+                # Read data from Arduino
+                arduino_data = ser.readline().decode('utf-8').strip()
+                
+                # Print received Arduino data
+                console.print(f"Received from Arduino: {arduino_data}", style="bold blue")
+                
+                # Check and parse data
+                if arduino_data == "action: true":
+                    now = datetime.now()
                     
-                    # 判断并解析数据
-                    if arduino_data == "action: true":
+                    # Send message only if 20 seconds have passed since the last message
+                    if last_sent_time is None or (now - last_sent_time) >= timedelta(seconds=20):
+                        last_sent_time = now  # Update last sent time
                         
-                        # 检查是否已经过了 20 秒
-                        user = "eps32"
-                        message = "Hello"
-                        action_code = "123"
-                        
-                        # 构建 JSON 数据
+                        # Construct JSON data to send to WebSocket server
                         data = {
-                            "user": user,
-                            "message": message,
-                            "action_code": action_code
+                            "user": "eps32",
+                            "message": "Hello",
+                            "action_code": "123"
                         }
                         
-                        # 发送消息到 WebSocket 服务器
+                        # Send message to WebSocket server
                         await websocket.send(json.dumps(data))
-                        print(f"Sent _>>>>>>>>")
-                        
-                        
-                        # 接收服务器的响应
-                        # response = await websocket.recv()
-                        # print(f"Received: {response}")
+                        console.print(f"Sent data: {data}", style="bold green")
                     
-                await asyncio.sleep(1)  # 使用 asyncio.sleep 替代 time.sleep，以确保协程正确运行
-        
-        except websockets.exceptions.ConnectionClosed as e:
-            print(f"WebSocket connection closed: {e}")
-        except Exception as e:
-            print(f"An error occurred: {e}")
+            # Receive and print messages from the WebSocket server
+            try:
+                message = await websocket.recv()
+                console.print(Text(message, style="bold yellow"))
+            except websockets.exceptions.ConnectionClosed as e:
+                console.print(f"WebSocket connection closed: {e}", style="bold red")
+                break  # Exit the loop if the connection is closed
 
-# 执行 WebSocket 测试
-asyncio.get_event_loop().run_until_complete(websocket_test())
+            await asyncio.sleep(1)  # Non-blocking sleep to allow other tasks to run
+            
+    except Exception as e:
+        console.print(f"An error occurred: {e}", style="bold red")
+
+async def websocket_test():
+    """ Establish WebSocket connection and handle communication. """
+    ip = "49.213.238.75"
+    uri = f"ws://{ip}:8000/ws/chat/example_room/"  # WebSocket server URL
+    
+    async with websockets.connect(uri) as websocket:
+        await handle_websocket(websocket)
+
+# Run the WebSocket test
+asyncio.run(websocket_test())

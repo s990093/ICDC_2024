@@ -19,6 +19,9 @@
 		D91841A32C79756B00BECB23 /* icd_IphoneUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91841A22C79756B00BECB23 /* icd_IphoneUITestsLaunchTests.swift */; };
 		D958EB812C7C0A960087598C /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = D958EB802C7C0A960087598C /* WebSocket.swift */; };
 		D958EB832C7C0AB60087598C /* TestWebSocketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D958EB822C7C0AB60087598C /* TestWebSocketView.swift */; };
+		D958EB852C7DB6530087598C /* SpeechManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D958EB842C7DB6530087598C /* SpeechManager.swift */; };
+		D958EB872C7DB80E0087598C /* PulsatingEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = D958EB862C7DB80E0087598C /* PulsatingEffect.swift */; };
+		D958EB892C7DCBDA0087598C /* ControlMotor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D958EB882C7DCBDA0087598C /* ControlMotor.swift */; };
 		D9D785742C79E0B9000C1512 /* EnvironmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D785732C79E0B9000C1512 /* EnvironmentView.swift */; };
 		D9D785772C79E2E1000C1512 /* LaunchScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D785762C79E2E1000C1512 /* LaunchScreenView.swift */; };
 /* End PBXBuildFile section */
@@ -56,6 +59,9 @@
 		D91841A22C79756B00BECB23 /* icd_IphoneUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = icd_IphoneUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		D958EB802C7C0A960087598C /* WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		D958EB822C7C0AB60087598C /* TestWebSocketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestWebSocketView.swift; sourceTree = "<group>"; };
+		D958EB842C7DB6530087598C /* SpeechManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechManager.swift; sourceTree = "<group>"; };
+		D958EB862C7DB80E0087598C /* PulsatingEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulsatingEffect.swift; sourceTree = "<group>"; };
+		D958EB882C7DCBDA0087598C /* ControlMotor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlMotor.swift; sourceTree = "<group>"; };
 		D9D785732C79E0B9000C1512 /* EnvironmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentView.swift; sourceTree = "<group>"; };
 		D9D785752C79E2A1000C1512 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D9D785762C79E2E1000C1512 /* LaunchScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenView.swift; sourceTree = "<group>"; };
@@ -114,9 +120,12 @@
 				D958EB802C7C0A960087598C /* WebSocket.swift */,
 				D958EB822C7C0AB60087598C /* TestWebSocketView.swift */,
 				D91841852C79756900BECB23 /* icd_IphoneApp.swift */,
+				D958EB882C7DCBDA0087598C /* ControlMotor.swift */,
 				D91841872C79756900BECB23 /* ContentView.swift */,
 				D9D785732C79E0B9000C1512 /* EnvironmentView.swift */,
 				D9083DDD2C79D9450051375B /* CollisionView.swift */,
+				D958EB842C7DB6530087598C /* SpeechManager.swift */,
+				D958EB862C7DB80E0087598C /* PulsatingEffect.swift */,
 				D9083DDF2C79D96D0051375B /* BatteryView.swift */,
 				D91841892C79756A00BECB23 /* Assets.xcassets */,
 				D9D785762C79E2E1000C1512 /* LaunchScreenView.swift */,
@@ -281,14 +290,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				D9083DE02C79D96D0051375B /* BatteryView.swift in Sources */,
+				D958EB852C7DB6530087598C /* SpeechManager.swift in Sources */,
 				D958EB812C7C0A960087598C /* WebSocket.swift in Sources */,
 				D9083DDE2C79D9450051375B /* CollisionView.swift in Sources */,
 				D958EB832C7C0AB60087598C /* TestWebSocketView.swift in Sources */,
 				D9D785772C79E2E1000C1512 /* LaunchScreenView.swift in Sources */,
 				D9083DDA2C79D8DF0051375B /* Model.swift in Sources */,
 				D91841882C79756900BECB23 /* ContentView.swift in Sources */,
+				D958EB872C7DB80E0087598C /* PulsatingEffect.swift in Sources */,
 				D9D785742C79E0B9000C1512 /* EnvironmentView.swift in Sources */,
 				D91841862C79756900BECB23 /* icd_IphoneApp.swift in Sources */,
+				D958EB892C7DCBDA0087598C /* ControlMotor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

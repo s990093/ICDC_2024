@@ -71,6 +71,7 @@ class WebSocketManager: ObservableObject {
         if let data = message.data(using: .utf8),
            let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: String],
            let actionCode = json["action_code"] {
+            print(actionCode)
             // Check for a specific action code
             if actionCode == "123" {
                 DispatchQueue.main.async {
@@ -80,4 +81,42 @@ class WebSocketManager: ObservableObject {
             print("Received message: \(message)")
         }
     }
+    
+    func send_motor(user: String, x: Double, y: Double) async {
+        self.connect()
+        
+        var actionCode = ""
+        
+        // Determine the action code based on x and y values
+        if x > 0 {
+            actionCode = x > 0 ? "10" : "11" // Example logic, modify based on actual requirements
+        } else if x < 0 {
+            actionCode = x < 0 ? "11" : "10" // Example logic, modify based on actual requirements
+        }
+        
+        if y > 0 {
+            actionCode = y > 0 ? "12" : "13" // Example logic, modify based on actual requirements
+        } else if y < 0 {
+            actionCode = y < 0 ? "13" : "12" // Example logic, modify based on actual requirements
+        }
+        
+        // Create the data dictionary
+        let data: [String: String] = [
+            "user": user,
+            "message": "Control Command",
+            "action_code": actionCode
+        ]
+        
+        // Convert the data dictionary to JSON
+        if let jsonData = try? JSONSerialization.data(withJSONObject: data, options: []) {
+            let message = URLSessionWebSocketTask.Message.data(jsonData)
+            do {
+                try await webSocketTask?.send(message)
+                print("Sent: \(data)")
+            } catch {
+                print("WebSocket sending error: \(error)")
+            }
+        }
+    }
+
 }

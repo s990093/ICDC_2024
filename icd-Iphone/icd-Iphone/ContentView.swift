@@ -22,6 +22,10 @@ struct ContentView: View {
                 .tabItem {
                     Image(systemName: "thermometer.sun.fill")
                 }
+            ControlMotor()
+                .tabItem {
+                    Image(systemName: "thermometer.sun.fill")
+                }
         }
 //        .preferredColorScheme(settings.isDarkMode ? .dark : .light) // Set color scheme based on the toggle
     }

@@ -5,11 +5,12 @@
 // #include "ServoControl.h"
 #include "Accelerometer.h"
 #include "config.h"
-// 
-#define TimeRange 14
-const int buzzerPin = 9;
-const unsigned long debounceDelay = 3000; 
-unsigned long lastActionTime = 0;
+//
+#define TimeRange 20
+#define BuzzerPin 9;
+#define DebounceDelay 3000;
+
+unsigned long LastActionTime = 0;
 
 //
 // obj
@@ -63,19 +64,26 @@ void loop()
   // x_servo.adjustAngleBasedOnRange(xAccl);
   // y_servo.adjustAngleBasedOnRange(yAccl);
 
-  //   toHandle_X(xAccl);
-  //   toHandle_Y(yAccl);
+  // toHandle_X(xAccl);
+  // toHandle_Y(yAccl);
 
   unsigned long currentMillis = millis();
 
   // 检查加速度是否在范围内，并且20秒内没有触发过
-  if ((xAccl < X_DOWN_RANGE * TimeRange || yAccl < Y_DOWN_RANGE * TimeRange) &&
-      (currentMillis - lastActionTime >= debounceDelay))
+  if ((xAccl > 300) &&
+      (currentMillis - lastActionTime >= DebounceDelay))
   {
 
     Serial.write("action: true\n");
     // digitalWrite(buzzerPin, HIGH);  // 蜂鸣器发声
     lastActionTime = currentMillis; // 更新最后触发时间
+  }
+
+  if (Serial.available())
+  {
+    String data = Serial.readStringUntil('\n');
+    // Process data
+    Serial.println(data); // Just an example of processing
   }
 
   delay(10);
