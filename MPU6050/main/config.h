@@ -96,9 +96,12 @@ const int SPI_FLASH_PINS[] = {6, 7, 8, 9, 10, 11};
 const int INPUT_ONLY_PINS[] = {34, 35, 36, 39};
 
 // c
-#define X_AXIS_SERVO_PINS 9
-#define Y_AXIS_SERVO_PINS 10
 
+#define SERVO_MIN_ANGLE -90    // 最小角度（负值）
+#define SERVO_MAX_ANGLE 0      // 最大角度
+#define SERVO_NEUTRAL_ANGLE 90 // 中立角度（0度）
+#define STEP_SIZE 5            // 每次调整的角度步长（1度）
+#define SERVO_DELAY 3          // 每次调整的角度步长（1度）
 // =================================================================
 // for ICDC 2024
 // =================================================================

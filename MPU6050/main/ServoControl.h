@@ -1,6 +1,5 @@
 #ifndef SERVOCONTROL_H
 #define SERVOCONTROL_H
-#include <Arduino.h>
 
 #include <Servo.h>
 

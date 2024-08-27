@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include "ServoControl.h"
 
 ServoControl::ServoControl(int pin, int lowerRange, int upperRange, int neutralAngle, int stepSize, int servoDelay)
@@ -27,6 +29,7 @@ void ServoControl::increaseAngle()
 void ServoControl::decreaseAngle()
 {
     currentAngle -= stepSize;
+    // Serial.println(currentAngle);
     setAngle(currentAngle);
 }
 
@@ -57,19 +60,27 @@ void ServoControl::adjustAngleBasedOnRange(int sensorValue)
 {
     if (sensorValue < lowerRange || sensorValue > upperRange)
     {
-        // Serial.println(xAcc  l);
+        // Serial.println(sensorValue);
 
         if (sensorValue < lowerRange)
         {
-            decreaseAngle();
+            currentAngle = currentAngle + stepSize;
+            servo.write(currentAngle);
+            delay(servoDelay);
         }
         else if (sensorValue > upperRange)
         {
-            increaseAngle();
+            // Serial.println(" UP");
+            currentAngle = currentAngle - stepSize;
+
+            servo.write(currentAngle); // 将伺服电机的位置设置为 pos + 90，范围在 0 到 180 度之间
+            delay(servoDelay);
         }
     }
     else
     {
-        moveToNeutral();
+        currentAngle = neutralAngle;
+        servo.write(currentAngle); // Set initial position to 90 degrees
+        delay(servoDelay);
     }
 }
