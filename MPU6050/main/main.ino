@@ -5,6 +5,11 @@
 // #include "ServoControl.h"
 #include "Accelerometer.h"
 #include "config.h"
+// 
+#define TimeRange 14
+const int buzzerPin = 9;
+const unsigned long debounceDelay = 3000; 
+unsigned long lastActionTime = 0;
 
 //
 // obj
@@ -34,6 +39,8 @@ void setup()
   x_servo.write(SERVO_NEUTRAL_ANGLE); // Set initial position to 90 degrees
   y_servo.write(SERVO_NEUTRAL_ANGLE); // Set initial position to 90 degrees
 
+  pinMode(buzzerPin, OUTPUT);
+
   // d
   delay(100);
 }
@@ -49,18 +56,29 @@ void setup()
 void loop()
 {
   int xAccl, yAccl, zAccl;
-  // accelerometer.readData(xAccl, yAccl, zAccl);
+  accelerometer.readData(xAccl, yAccl, zAccl);
   // Serial.println(xAccl);
 
   // Adjust X-axis and Y-axis servo angles based on accelerometer data
   // x_servo.adjustAngleBasedOnRange(xAccl);
   // y_servo.adjustAngleBasedOnRange(yAccl);
 
-//   toHandle_X(xAccl);
-//   toHandle_Y(yAccl);
-  Serial.println("Hello from Arduino");
-  delay(1000);
+  //   toHandle_X(xAccl);
+  //   toHandle_Y(yAccl);
 
+  unsigned long currentMillis = millis();
+
+  // 检查加速度是否在范围内，并且20秒内没有触发过
+  if ((xAccl < X_DOWN_RANGE * TimeRange || yAccl < Y_DOWN_RANGE * TimeRange) &&
+      (currentMillis - lastActionTime >= debounceDelay))
+  {
+
+    Serial.write("action: true\n");
+    // digitalWrite(buzzerPin, HIGH);  // 蜂鸣器发声
+    lastActionTime = currentMillis; // 更新最后触发时间
+  }
+
+  delay(10);
 }
 
 void toHandle_Y(int yAccl)

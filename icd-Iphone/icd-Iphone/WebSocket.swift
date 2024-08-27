@@ -5,6 +5,7 @@ class WebSocketManager: ObservableObject {
     private var webSocketTask: URLSessionWebSocketTask?
     @Published var receivedMessage: String = ""
     @Published var isConnected: Bool = false
+    @Published var collisionDetected: Bool = false
     var ip = "49.213.238.75"
     
     init() {
@@ -52,22 +53,31 @@ class WebSocketManager: ObservableObject {
                 switch message {
                 case .data(let data):
                     if let messageString = String(data: data, encoding: .utf8) {
-                        DispatchQueue.main.async {
-                            self?.receivedMessage = messageString
-                            print("Received message: \(messageString)")
-                        }
+                        self?.handleReceivedMessage(messageString)
                     }
                 case .string(let text):
-                    DispatchQueue.main.async {
-                        self?.receivedMessage = text
-                        print("Received message: \(text)")
-                    }
+                    self?.handleReceivedMessage(text)
                 @unknown default:
                     break
                 }
                 // Continue listening for more messages
                 self?.listenForMessages()
             }
+        }
+    }
+    
+    private func handleReceivedMessage(_ message: String) {
+        // Parse the message
+        if let data = message.data(using: .utf8),
+           let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: String],
+           let actionCode = json["action_code"] {
+            // Check for a specific action code
+            if actionCode == "123" {
+                DispatchQueue.main.async {
+                    self.collisionDetected = true
+                }
+            }
+            print("Received message: \(message)")
         }
     }
 }
