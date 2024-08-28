@@ -101,7 +101,7 @@ const int INPUT_ONLY_PINS[] = {34, 35, 36, 39};
 #define SERVO_MAX_ANGLE 0      // 最大角度
 #define SERVO_NEUTRAL_ANGLE 90 // 中立角度（0度）
 #define STEP_SIZE 5            // 每次调整的角度步长（1度）
-#define SERVO_DELAY 3          // 每次调整的角度步长（1度）
+#define SERVO_DELAY 10         // 每次调整的角度步长（1度）
 // =================================================================
 // for ICDC 2024
 // =================================================================
@@ -109,19 +109,42 @@ const int INPUT_ONLY_PINS[] = {34, 35, 36, 39};
 // Constants
 #define ACCELEROMETER_ADDR 0x19
 
-// =================================================================
-// for Y
-// =================================================================
-
-#define X_SERVO_PIN 8
-#define X_DOWN_RANGE -16
-#define X_UPPER_RANGE 130
+#define X_LED_PIN 12
+#define Y_LED_PIN 11
 
 // =================================================================
 // for X
 // =================================================================
 
-#define Y_SERVO_PIN 7
+#define X_SERVO_PIN_RIGHT 9
+#define X_SERVO_PIN_LEFT 8
+
+#define X_DOWN_RANGE -16
+#define X_UPPER_RANGE 130
+
+#define X_SERVO_NEUTRAL_ANGLE_LEFT 87
+#define X_SERVO_NEUTRAL_ANGLE_RIGHT 90
+
+#define X_DEBOUNCE_THRESHOLD 0     // Adjust based on your needs
+#define X_MOVING_AVERAGE_WINDOW 10 // X 轴的窗口大小
+
+// =================================================================
+// for Y
+// =================================================================
+
+#define Y_SERVO_PIN_LEFT 7
+#define Y_SERVO_PIN_RIGHT 6
+
 #define Y_DOWN_RANGE -120
 #define Y_UPPER_RANGE 48
+
+#define Y_SERVO_NEUTRAL_ANGLE_LEFT 85
+#define Y_SERVO_NEUTRAL_ANGLE_RIGHT 95
+
+#define Y_DEBOUNCE_THRESHOLD 0 // Adjust based on your needs
+#define Y_MOVING_AVERAGE_WINDOW 10
+
+#define DEADZONE 5           // 自定義一個死區範圍
+#define DEBOUNCE_THRESHOLD 5 // Adjust based on your needs
+
 #endif // CONFIG_H
