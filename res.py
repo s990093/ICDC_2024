@@ -1,30 +1,34 @@
 import asyncio
 import websockets
+import json
 from rich.console import Console
-from rich.text import Text
 
-# 创建 rich 的 Console 实例
+# Create a rich Console instance
 console = Console()
 
-async def listen_for_messages():
+async def send_message():
     ip = "49.213.238.75"
-    uri = f"ws://{ip}:8000/ws/chat/example_room/"  # WebSocket 服务器的完整路径
+    uri = f"ws://{ip}:8000/ws/chat/example_room/"  # WebSocket server's full path
     
     async with websockets.connect(uri) as websocket:
         console.print("Connected to WebSocket server.", style="bold green")
         
         try:
-            while True:
-                # 接收来自服务器的消息
-                message = await websocket.recv()
-                
-                # 使用 rich 打印消息
-                console.print(Text(message, style="bold yellow"))
+            # Construct JSON data to send to WebSocket server
+            data = {
+                "user": "eps32",
+                "message": "Hello",
+                "action_code": "123"
+            }
+            
+            # Send message to WebSocket server
+            await websocket.send(json.dumps(data))
+            console.print(f"Message sent: {data}", style="bold blue")
         
         except websockets.exceptions.ConnectionClosed as e:
             console.print(f"WebSocket connection closed: {e}", style="bold red")
         except Exception as e:
             console.print(f"An error occurred: {e}", style="bold red")
 
-# 执行 WebSocket 监听
-asyncio.get_event_loop().run_until_complete(listen_for_messages())
+# Execute the message sending function
+asyncio.get_event_loop().run_until_complete(send_message())

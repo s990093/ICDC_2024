@@ -1,22 +1,32 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <Servo.h>
+
 // self-written libraries
 // #include "ServoControl.h"
 #include "Accelerometer.h"
+// #include "SensorFilter.h"
 #include "config.h"
 //
 #define TimeRange 20
-#define BuzzerPin 9;
 #define DebounceDelay 3000
 
+#define BUZZER_PIN 12       // 蜂鸣器连接的引脚
+#define TONE_FREQUENCY 1000 // 蜂鸣器的频率，单位是Hz
+#define TONE_DURATION 500   // 蜂鸣器发声的持续时间，单位是毫秒
+
 unsigned long LastActionTime = 0; // 宣告並初始化 LastActionTime 變數
+
+const float alpha = 0.1;               // 调整此值来改变滤波器的截止频率
+float prevX = 0, prevY = 0, prevZ = 0; // 上一个周期的滤波器输出
 
 //
 // obj
 // ServoControl x_servo(X_SERVO_PIN, X_DOWN_RANGE, X_UPPER_RANGE);
 // ServoControl y_servo(Y_SERVO_PIN, Y_DOWN_RANGE, Y_UPPER_RANGE);
 Accelerometer accelerometer(ACCELEROMETER_ADDR);
+
+// SensorFilter filter(0.9, 10);
 
 Servo x_servo_right;
 Servo x_servo_left;
@@ -39,6 +49,12 @@ int lastXAccl = 0;
 int yAcclBuffer[Y_MOVING_AVERAGE_WINDOW]; // 数据缓冲区
 int xAcclBuffer[X_MOVING_AVERAGE_WINDOW]; // X 轴数据缓冲区
 
+void beep()
+{
+  tone(BUZZER_PIN, TONE_FREQUENCY); // 让蜂鸣器发声
+  delay(TONE_DURATION);             // 持续0.5秒
+  noTone(BUZZER_PIN);               // 停止发声
+}
 void setup()
 {
   Wire.begin();
@@ -46,25 +62,139 @@ void setup()
 
   accelerometer.initialize();
 
+  pinMode(BUZZER_PIN, OUTPUT); // 设置蜂鸣器引脚为输出模式
+
   // x_servo.moveToNeutral();
   // y_servo.moveToNeutral();
 
   x_servo_left.attach(X_SERVO_PIN_LEFT);   // Attach the servo to pin 9
   x_servo_right.attach(X_SERVO_PIN_RIGHT); // Attach the servo to pin 9
+
   y_servo_right.attach(Y_SERVO_PIN_RIGHT);
   y_servo_left.attach(Y_SERVO_PIN_LEFT);
 
-  x_servo_left.write(SERVO_NEUTRAL_ANGLE);  // Set initial position to 90 degrees
-  x_servo_right.write(SERVO_NEUTRAL_ANGLE); // Set initial position to 90 degrees
+  x_servo_left.write(X_SERVO_NEUTRAL_ANGLE_LEFT);   // Set initial position to 90 degrees
+  x_servo_right.write(X_SERVO_NEUTRAL_ANGLE_RIGHT); // Set initial position to 90 degrees
 
   y_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT); // Set initial position to 90 degrees
   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT);   // Set initial position to 90 degrees
 
-  pinMode(X_LED_PIN, OUTPUT); // 设置 X 轴 LED 引脚为输出
-  pinMode(Y_LED_PIN, OUTPUT); // 设置 Y 轴 LED 引脚为输出
+  // pinMode(X_LED_PIN, OUTPUT); // 设置 X 轴 LED 引脚为输出
+  // pinMode(Y_LED_PIN, OUTPUT); // 设置 Y 轴 LED 引脚为输出
+  Serial.println("init");
 
   // d
-  delay(100);
+  delay(500);
+}
+
+void loop()
+{
+  Serial.println("Please turn the X");
+
+  // // 慢慢向左30度
+  for (int angle = 0; angle <= 30; angle += STEP_SIZE)
+  {
+    x_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT - angle);
+    x_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+    delay(SERVO_DELAY);
+  }
+
+  // 慢慢向右30度
+  for (int angle = 30; angle >= -30; angle -= STEP_SIZE)
+  {
+    x_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT - angle);
+    x_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+    delay(SERVO_DELAY);
+  }
+
+  // 慢慢回到中立位置
+  for (int angle = -30; angle <= 0; angle += STEP_SIZE)
+  {
+    x_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT - angle);
+    x_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+    delay(SERVO_DELAY);
+  }
+
+
+  beep();
+  Serial.println("Please turn the Y");
+  delay(1000); // 在循环结束时暂停一段时间
+
+  // // 慢慢向左30度
+  // for (int angle = 0; angle <= 30; angle += STEP_SIZE)
+  // {
+  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
+  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+  //   delay(SERVO_DELAY);
+  // }
+
+  // // 慢慢向右30度
+  // for (int angle = 30; angle >= -30; angle -= STEP_SIZE)
+  // {
+  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
+  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+  //   delay(SERVO_DELAY);
+  // }
+
+  // // 慢慢回到中立位置
+  // for (int angle = -30; angle <= 0; angle += STEP_SIZE)
+  // {
+  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
+  //   y_servo_left.write(X_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+  //   delay(SERVO_DELAY);
+  // }
+
+
+  // beep();
+  // Serial.println("Please turn the X and Y at the same time");
+  // delay(1000); // 在循环结束时暂停一段时间
+  
+
+  // // 同时协调X和Y方向，慢慢向左30度
+  // for (int angle = 0; angle <= 30; angle += STEP_SIZE)
+  // {
+  //   // X方向
+  //   x_servo_left.write(X_SERVO_NEUTRAL_ANGLE_LEFT - angle);
+  //   x_servo_right.write(X_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+
+  //   // Y方向
+  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
+  //   y_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT - angle);
+
+  //   delay(SERVO_DELAY);
+  // }
+
+  // // 同时协调X和Y方向，慢慢向右30度
+  // for (int angle = 30; angle >= -30; angle -= STEP_SIZE)
+  // {
+  //   // X方向
+  //   x_servo_left.write(X_SERVO_NEUTRAL_ANGLE_LEFT - angle);
+  //   x_servo_right.write(X_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+
+  //   // Y方向
+  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
+  //   y_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT - angle);
+
+  //   delay(SERVO_DELAY);
+  // }
+
+  // // 同时协调X和Y方向，慢慢回到中立位置
+  // for (int angle = -30; angle <= 0; angle += STEP_SIZE)
+  // {
+  //   // X方向
+  //   x_servo_left.write(X_SERVO_NEUTRAL_ANGLE_LEFT - angle);
+  //   x_servo_right.write(X_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+
+  //   // Y方向
+  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
+  //   y_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT - angle);
+
+  //   delay(SERVO_DELAY);
+  // }
+
+  // delay(1000); // 在循环结束时暂停一段时间
+
+  // beep(); // 蜂鸣器发声
 }
 
 /**
@@ -75,33 +205,46 @@ void setup()
  *
  * @return This function does not return any value.
  */
-void loop()
-{
-  int xAccl, yAccl, zAccl;
-  accelerometer.readData(xAccl, yAccl, zAccl);
-  // Serial.println(xAccl);
+// void loop()
+// {
+//   // int xAccl, yAccl, zAccl;
+//   // accelerometer.readData(xAccl, yAccl, zAccl);
+//   // // float filteredX = alpha * (prevX + xAccl - prevX);
+//   // // float filteredY = alpha * (prevY + yAccl - prevY);
 
-  // Adjust X-axis and Y-axis servo angles based on accelerometer data
-  // x_servo.adjustAngleBasedOnRange(xAccl);
-  // y_servo.adjustAngleBasedOnRange(yAccl);
+//   // // prevX = filteredX;
+//   // // prevY = filteredY;
+//   // toHandle_X(xAccl);
+//   // // toHandle_Y(yAccl);
 
-  toHandle_X(xAccl);
-  toHandle_Y(yAccl);
+//   // unsigned long currentMillis = millis();
 
-  unsigned long currentMillis = millis();
+//   // // 检查加速度是否在范围内，并且20秒内没有触发过
+//   // if ((xAccl > 300) &&
+//   //     (currentMillis - LastActionTime >= DebounceDelay))
+//   // {
 
-  // 检查加速度是否在范围内，并且20秒内没有触发过
-  if ((xAccl > 300) &&
-      (currentMillis - LastActionTime >= DebounceDelay))
-  {
+//   //   Serial.write("action: true\n");
+//   //   // digitalWrite(buzzerPin, HIGH);  // 蜂鸣器发声
+//   //   LastActionTime = currentMillis; // 更新最后触发时间
+//   // }
 
-    Serial.write("action: true\n");
-    // digitalWrite(buzzerPin, HIGH);  // 蜂鸣器发声
-    LastActionTime = currentMillis; // 更新最后触发时间
-  }
+//   // delay(10);
+//   // 先向左30度
+//   x_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT - 30);
+//   x_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + 30);
+//   delay(SERVO_DELAY); // 延迟一段时间
 
-  delay(10);
-}
+//   // 再向右30度
+//   x_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + 30);
+//   x_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT - 30);
+//   delay(SERVO_DELAY); // 延迟一段时间
+
+//   // 回到中立位置
+//   x_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT);
+//   x_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT);
+//   delay(SERVO_DELAY); // 延迟一段时间
+// }
 
 // =================================================================
 
@@ -115,36 +258,6 @@ void smoothMove(int targetAngle, Servo &servo)
     servo.write(x_currentAngle); // 使用傳入的伺服對象來調整角度
     delay(15);                   // 每次移動之間的延遲
   }
-}
-
-// 计算并返回过滤后的 X 轴加速度值
-int getFilteredXAccl(int xAccl)
-{
-  xAcclBuffer[xBufferIndex] = xAccl;                           // 将当前值放入 X 轴缓冲区
-  xBufferIndex = (xBufferIndex + 1) % X_MOVING_AVERAGE_WINDOW; // 更新索引
-
-  long sum = 0;
-  for (int i = 0; i < X_MOVING_AVERAGE_WINDOW; i++)
-  {
-    sum += xAcclBuffer[i]; // 计算 X 轴缓冲区中所有值的总和
-  }
-
-  return sum / X_MOVING_AVERAGE_WINDOW; // 返回 X 轴的平均值
-}
-
-// 计算并返回过滤后的 Y 轴加速度值
-int getFilteredYAccl(int yAccl)
-{
-  yAcclBuffer[yBufferIndex] = yAccl;                           // 将当前值放入 Y 轴缓冲区
-  yBufferIndex = (yBufferIndex + 1) % Y_MOVING_AVERAGE_WINDOW; // 更新索引
-
-  long sum = 0;
-  for (int i = 0; i < Y_MOVING_AVERAGE_WINDOW; i++)
-  {
-    sum += yAcclBuffer[i]; // 计算 Y 轴缓冲区中所有值的总和
-  }
-
-  return sum / Y_MOVING_AVERAGE_WINDOW; // 返回 Y 轴的平均值
 }
 
 // =================================================================
@@ -192,7 +305,7 @@ void toHandle_Y(int yAccl)
     delay(SERVO_DELAY);
   }
 
-  889(Y_LED_PIN, yMotion ? HIGH : LOW);
+  // digitalWrite(Y_LED_PIN, yMotion ? HIGH : LOW);
   lastYAccl = yAccl;
 }
 
@@ -216,13 +329,13 @@ void toHandle_X(int xAccl)
 
       if (xAccl < X_DOWN_RANGE)
       {
-        x_currentAngle_left -= STEP_SIZE;
-        x_currentAngle_right += STEP_SIZE;
+        x_currentAngle_left += STEP_SIZE;
+        x_currentAngle_right -= STEP_SIZE;
       }
       else if (xAccl > X_UPPER_RANGE)
       {
-        x_currentAngle_left += STEP_SIZE;
-        x_currentAngle_right -= STEP_SIZE;
+        x_currentAngle_left -= STEP_SIZE;
+        x_currentAngle_right += STEP_SIZE;
       }
 
       x_servo_left.write(x_currentAngle_left);
@@ -242,6 +355,6 @@ void toHandle_X(int xAccl)
     delay(SERVO_DELAY);
   }
 
-  digitalWrite(X_LED_PIN, xMotion ? HIGH : LOW);
+  // digitalWrite(X_LED_PIN, xMotion ? HIGH : LOW);
   lastXAccl = xAccl; // Update lastXAccl for the next call
 }

@@ -1,5 +1,3 @@
-import SwiftUI
-
 @main
 struct MyApp: App {
     @State private var isShowingLaunchScreen = true
