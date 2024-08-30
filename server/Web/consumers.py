@@ -55,6 +55,8 @@ class ChatConsumer(WebsocketConsumer):
                         'action_code': action_code,
                     }
                     )
+                
+                
             if bytes_data:
                 text_message = bytes_data.decode('utf-8')
                 text_data_json = json.loads(text_message)
