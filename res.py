@@ -21,6 +21,8 @@ async def send_message():
                 "action_code": "123"
             }
             
+            # 744155
+            
             # Send message to WebSocket server
             await websocket.send(json.dumps(data))
             console.print(f"Message sent: {data}", style="bold blue")

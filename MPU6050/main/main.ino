@@ -15,6 +15,9 @@
 #define TONE_FREQUENCY 1000 // 蜂鸣器的频率，单位是Hz
 #define TONE_DURATION 500   // 蜂鸣器发声的持续时间，单位是毫秒
 
+const int pin2 = 2; // 設定 pin 2 作為輸入
+const int pin3 = 3; // 設定 pin 2 作為輸入
+
 unsigned long LastActionTime = 0; // 宣告並初始化 LastActionTime 變數
 
 const float alpha = 0.1;               // 调整此值来改变滤波器的截止频率
@@ -55,6 +58,7 @@ void beep()
   delay(TONE_DURATION);             // 持续0.5秒
   noTone(BUZZER_PIN);               // 停止发声
 }
+
 void setup()
 {
   Wire.begin();
@@ -79,6 +83,9 @@ void setup()
   y_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT); // Set initial position to 90 degrees
   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT);   // Set initial position to 90 degrees
 
+  pinMode(pin2, INPUT);
+  pinMode(pin3, INPUT);
+
   // pinMode(X_LED_PIN, OUTPUT); // 设置 X 轴 LED 引脚为输出
   // pinMode(Y_LED_PIN, OUTPUT); // 设置 Y 轴 LED 引脚为输出
   Serial.println("init");
@@ -87,12 +94,11 @@ void setup()
   delay(500);
 }
 
-void loop()
+void mode_1()
 {
-  Serial.println("Please turn the X");
 
-  // // 慢慢向左30度
-  for (int angle = 0; angle <= 30; angle += STEP_SIZE)
+  // 慢慢向左30度
+  for (int angle = 0; angle <= 40; angle += STEP_SIZE)
   {
     x_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT - angle);
     x_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
@@ -100,7 +106,7 @@ void loop()
   }
 
   // 慢慢向右30度
-  for (int angle = 30; angle >= -30; angle -= STEP_SIZE)
+  for (int angle = 40; angle >= -40; angle -= STEP_SIZE)
   {
     x_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT - angle);
     x_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
@@ -108,93 +114,122 @@ void loop()
   }
 
   // 慢慢回到中立位置
-  for (int angle = -30; angle <= 0; angle += STEP_SIZE)
+  for (int angle = -40; angle <= 0; angle += STEP_SIZE)
   {
     x_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT - angle);
     x_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
     delay(SERVO_DELAY);
   }
 
+  beep();
+  delay(1000); // 在循环结束时暂停一段时间
+}
+
+void mode_2()
+{
+  // 慢慢向左30度
+  for (int angle = 0; angle <= 30; angle += STEP_SIZE)
+  {
+    y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
+    y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+    delay(SERVO_DELAY);
+  }
+
+  // 慢慢向右30度
+  for (int angle = 30; angle >= -30; angle -= STEP_SIZE)
+  {
+    y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
+    y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+    delay(SERVO_DELAY);
+  }
+
+  // 慢慢回到中立位置
+  for (int angle = -40; angle <= 0; angle += STEP_SIZE)
+  {
+    y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
+    y_servo_left.write(X_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+    delay(SERVO_DELAY);
+  }
 
   beep();
-  Serial.println("Please turn the Y");
+
   delay(1000); // 在循环结束时暂停一段时间
+}
 
-  // // 慢慢向左30度
-  // for (int angle = 0; angle <= 30; angle += STEP_SIZE)
+void mode_3()
+{
+  // 同时协调X和Y方向，慢慢向左30度
+  for (int angle = 0; angle <= 30; angle += STEP_SIZE)
+  {
+    // X方向
+    x_servo_left.write(X_SERVO_NEUTRAL_ANGLE_LEFT - angle);
+    x_servo_right.write(X_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+
+    // Y方向
+    y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
+    y_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT - angle);
+
+    delay(SERVO_DELAY);
+  }
+
+  // 同时协调X和Y方向，慢慢向右30度
+  for (int angle = 30; angle >= -30; angle -= STEP_SIZE)
+  {
+    // X方向
+    x_servo_left.write(X_SERVO_NEUTRAL_ANGLE_LEFT - angle);
+    x_servo_right.write(X_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+
+    // Y方向
+    y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
+    y_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT - angle);
+
+    delay(SERVO_DELAY);
+  }
+
+  // 同时协调X和Y方向，慢慢回到中立位置
+  for (int angle = -30; angle <= 0; angle += STEP_SIZE)
+  {
+    // X方向
+    x_servo_left.write(X_SERVO_NEUTRAL_ANGLE_LEFT - angle);
+    x_servo_right.write(X_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
+
+    // Y方向
+    y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
+    y_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT - angle);
+
+    delay(SERVO_DELAY);
+  }
+
+  beep();
+
+  delay(1000); // 在循环结束时暂停一段时间
+}
+
+void loop()
+{
+
+  int state_1 = digitalRead(pin2);
+
+  // if (state_1 == LOW)
   // {
-  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
-  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
-  //   delay(SERVO_DELAY);
-  // }
+  //   Serial.print("X ");
 
-  // // 慢慢向右30度
-  // for (int angle = 30; angle >= -30; angle -= STEP_SIZE)
+  //   mode_3();
+
+  //   delay(3);
+  //   }
+
+  // if (state_2 == LOW)
   // {
-  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
-  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
-  //   delay(SERVO_DELAY);
+  //    Serial.print("Y ");
+
+  //   mode_2();
   // }
+  mode_1();
+  mode_2();
+  // mode_3();
 
-  // // 慢慢回到中立位置
-  // for (int angle = -30; angle <= 0; angle += STEP_SIZE)
-  // {
-  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
-  //   y_servo_left.write(X_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
-  //   delay(SERVO_DELAY);
-  // }
-
-
-  // beep();
-  // Serial.println("Please turn the X and Y at the same time");
-  // delay(1000); // 在循环结束时暂停一段时间
-  
-
-  // // 同时协调X和Y方向，慢慢向左30度
-  // for (int angle = 0; angle <= 30; angle += STEP_SIZE)
-  // {
-  //   // X方向
-  //   x_servo_left.write(X_SERVO_NEUTRAL_ANGLE_LEFT - angle);
-  //   x_servo_right.write(X_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
-
-  //   // Y方向
-  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
-  //   y_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT - angle);
-
-  //   delay(SERVO_DELAY);
-  // }
-
-  // // 同时协调X和Y方向，慢慢向右30度
-  // for (int angle = 30; angle >= -30; angle -= STEP_SIZE)
-  // {
-  //   // X方向
-  //   x_servo_left.write(X_SERVO_NEUTRAL_ANGLE_LEFT - angle);
-  //   x_servo_right.write(X_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
-
-  //   // Y方向
-  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
-  //   y_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT - angle);
-
-  //   delay(SERVO_DELAY);
-  // }
-
-  // // 同时协调X和Y方向，慢慢回到中立位置
-  // for (int angle = -30; angle <= 0; angle += STEP_SIZE)
-  // {
-  //   // X方向
-  //   x_servo_left.write(X_SERVO_NEUTRAL_ANGLE_LEFT - angle);
-  //   x_servo_right.write(X_SERVO_NEUTRAL_ANGLE_RIGHT + angle);
-
-  //   // Y方向
-  //   y_servo_left.write(Y_SERVO_NEUTRAL_ANGLE_LEFT + angle);
-  //   y_servo_right.write(Y_SERVO_NEUTRAL_ANGLE_RIGHT - angle);
-
-  //   delay(SERVO_DELAY);
-  // }
-
-  // delay(1000); // 在循环结束时暂停一段时间
-
-  // beep(); // 蜂鸣器发声
+  delay(2);
 }
 
 /**
@@ -248,6 +283,18 @@ void loop()
 
 // =================================================================
 
+/**
+ * @brief Smoothly moves the servo to the target angle.
+ *
+ * This function takes a target angle and a reference to a Servo object. It calculates the step size based on the
+ * target angle and the current angle of the servo. Then, it continuously adjusts the angle of the servo by the step size
+ * until it reaches the target angle.
+ *
+ * @param targetAngle The target angle to which the servo should move.
+ * @param servo A reference to the Servo object to which the function will adjust the angle.
+ *
+ * @return This function does not return any value.
+ */
 void smoothMove(int targetAngle, Servo &servo)
 {
   int step = (targetAngle > x_currentAngle) ? 1 : -1; // 根據目標角度設置增量或減量
